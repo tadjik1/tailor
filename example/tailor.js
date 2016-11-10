@@ -10,11 +10,17 @@ const tailor = new Tailor({
     amdLoaderUrl: AMD_LOADER,
     fetchTemplate: fetchTemplateFs(path.join(__dirname, 'templates'), baseTemplateFn)
 });
+
+tailor.on('end', (request, contentLength) => {
+    console.log('sent', contentLength);
+});
+
 const server = http.createServer((req, res) => {
     if (req.url === '/favicon.ico') {
         res.writeHead(200, {'Content-Type': 'image/x-icon'} );
         return res.end('');
     }
+
     return tailor.requestHandler(req, res);
 });
 server.listen(8080);
